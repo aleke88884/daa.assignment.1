@@ -62,6 +62,22 @@ class MergeSort{
         }
     }
 
+
+    public static void insertionSort(int[] arr,int left, int right){
+        for (int i = left + 1;i<=right;i++){
+            int key = arr[i];
+            int j = i -1;
+            while(j>= left && arr[j] > key){
+                arr[j+1] = arr[j];
+                j--;
+            }
+            arr[j+1] = key;
+        }
+    }
+
+
+
+
     public static void main(String[] args) {
         int arr []  = {12,11,13,5,6,7};
         mergeSort(arr, 0, arr.length - 1);
