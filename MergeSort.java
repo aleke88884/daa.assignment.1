@@ -1,90 +1,74 @@
-class MergeSort{
+class MergeSort {
 
-
+    private static final int INSERTION_SORT_THRESHOLD = 16;
 
     // The arr[left .. middle]
     // The arr[middle+1 .. right]
-    public static void merge(int arr[],int left,int middle,int right){
-        
-        // Find sizes of two subarrays to be merged
-        int n1 = middle - left + 1;
-        int n2 = right - middle;
-    
-        // Create temp arrays
-        int leftArray[] = new int[n1];
-        int rightArray[] = new int[n2];    
-
-        // Copy data to temp arrays
-        for(int i = 0;i<n1;i++){
-            leftArray[i] = arr[left + i];
-        }
-        for(int j = 0;j<n2;j++){
-            rightArray[j] = arr[middle + 1 + j];
+    public static void merge(int arr[], int buffer[], int left, int middle, int right) {
+        // Copying left site into buffer
+        for (int i = left; i <= middle; i++) {
+            buffer[i] = arr[i];
         }
 
+        int i = left; // index for buffer
+        int j = middle + 1; // index for right site (from arr[])
+        int k = left; // index for initial arr[]
 
-        int i = 0,j = 0;
-        int k = left;
-
-        while(i < n1 && j < n2){
-            if(leftArray[i] <= rightArray[j]){
-                arr[k] = leftArray[i];
-                i++;
+        // Linear merge
+        while (i <= middle && j <= right) {
+            if (buffer[i] <= arr[j]) {
+                arr[k++] = buffer[i++];
+            } else {
+                arr[k++] = arr[j++];
             }
-            else{
-                arr[k] = rightArray[j];
-                j++;
-            }
-            k++;
         }
 
-        while (i< n1){
-            arr[k] = leftArray[i];
-            i++;
-            k++;
+        // Left remains (because right site already in here, so do not need to copy)
+        while (i <= middle) {
+            arr[k++] = buffer[i++];
         }
-
-        while(j<n2){
-            arr[k] = rightArray[j];
-            j++;
-            k++;
-        }
-
     }
-    public static void mergeSort(int arr[],int left, int right){
-        if(left< right){
+
+    public static void mergeSort(int arr[], int buffer[], int left, int right) {
+        if (right - left + 1 <= INSERTION_SORT_THRESHOLD) {
+            insertionSort(arr, left, right);
+            return;
+        }
+
+        if (left < right) {
             int middle = left + (right - left) / 2;
-
-            mergeSort(arr,left,middle);
-            mergeSort(arr, middle+1, right);
-
-            merge(arr, left, middle, right);
+            mergeSort(arr, buffer, left, middle);
+            mergeSort(arr, buffer, middle + 1, right);
+            merge(arr, buffer, left, middle, right);
         }
+
     }
 
-
-    public static void insertionSort(int[] arr,int left, int right){
-        for (int i = left + 1;i<=right;i++){
+    public static void insertionSort(int[] arr, int left, int right) {
+        for (int i = left + 1; i <= right; i++) {
             int key = arr[i];
-            int j = i -1;
-            while(j>= left && arr[j] > key){
-                arr[j+1] = arr[j];
+            int j = i - 1;
+            while (j >= left && arr[j] > key) {
+                arr[j + 1] = arr[j];
                 j--;
             }
-            arr[j+1] = key;
+            arr[j + 1] = key;
         }
     }
 
-
-
+    public static void sort(int[] arr) {
+        int[] buffer = new int[arr.length];
+        mergeSort(arr, buffer, 0, arr.length - 1);
+    }
 
     public static void main(String[] args) {
-        int arr []  = {12,11,13,5,6,7};
-        mergeSort(arr, 0, arr.length - 1);
+        int arr[] = { 12, 11, 13, 5, 6, 7, 4, 2, 9, 8, 1, 11, 24, 512, 51, 22, 22, 32 };
 
-        
-        for(int i = 0;i<arr.length;i++){
-            System.out.print(arr[i] + " ");
-        }   
+        sort(arr);
+
+        for (int i : arr) {
+            System.out.print(i + " ");
+        }
+
     }
 }
