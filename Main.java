@@ -41,4 +41,42 @@ public class Main {
         // if recursion depth was too high, it would StackOverflow
         System.out.println("QuickSort recursion depth bounded OK");
     }
+
+    private static void testDeterministicSelectSort() {
+        System.out.println("=== DeterministicSelect Tests ===");
+        for (int trial = 0; trial < 100; trial++) {
+            int n = rand.nextInt(50) + 1;
+            int[] arr = rand.ints(n, -1000, 1000).toArray();
+            int k = rand.nextInt(n);
+
+            int result = DeterministicSelect.select(arr.clone(), 0, n - 1, k);
+
+            int[] sorted = arr.clone();
+            Arrays.sort(sorted);
+            if (result != sorted[k]) {
+                throw new AssertionError("Select failed trial " + trial);
+            }
+        }
+        System.out.println("DeterministicSelect OK across 100 trials");
+    }
+
+    private static void testMergeSort() {
+        System.out.println("=== MergeSort Tests ===");
+        for (int t = 0; t < 10; t++) {
+            int n = rand.nextInt(100) + 1;
+            int[] arr = rand.ints(n, -1000, 1000).toArray();
+            int[] copy = arr.clone();
+
+            MergeSort.sort(arr);
+            Arrays.sort(copy);
+
+            if (!Arrays.equals(arr, copy)) {
+                throw new AssertionError("MergeSort failed");
+            }
+        }
+        System.out.println("MergeSort correctness OK");
+    }
+
+
+    
 }
