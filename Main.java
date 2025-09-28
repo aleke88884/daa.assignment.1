@@ -77,6 +77,58 @@ public class Main {
         System.out.println("MergeSort correctness OK");
     }
 
+    private static void testClosestPairClass() {
+        System.out.println("=== ClosestPair (standalone) Tests ===");
+        Random rand = new Random();
 
-    
+        // 1. Проверка корректности против brute force
+        for (int trial = 0; trial < 5; trial++) {
+            int n = 200; // малый размер, чтобы brute force работал быстро
+            ClosestPair.Point[] points = new ClosestPair.Point[n];
+            for (int i = 0; i < n; i++) {
+                points[i] = new ClosestPair.Point(rand.nextDouble() * 1000, rand.nextDouble() * 1000);
+            }
+            double fast = ClosestPair.closest(points);
+            double slow = bruteForceClosestPair(points);
+            if (Math.abs(fast - slow) > 1e-6) {
+                throw new AssertionError("ClosestPair mismatch on trial " + trial);
+            }
+        }
+        System.out.println("ClosestPair correctness (vs brute force) OK");
+
+        // 2. Проверка на больших массивах
+        int n = 200_000;
+        ClosestPair.Point[] points = new ClosestPair.Point[n];
+        for (int i = 0; i < n; i++) {
+            points[i] = new ClosestPair.Point(rand.nextDouble() * 10_000, rand.nextDouble() * 10_000);
+        }
+        long start = System.currentTimeMillis();
+        double d = ClosestPair.closest(points);
+        long end = System.currentTimeMillis();
+        System.out.printf("ClosestPair large test OK, n=%d, dist=%.6f, time=%d ms\n", n, d, (end - start));
+    }
+
+    // Вспомогательный метод для сравнения
+    private static double bruteForceClosestPair(ClosestPair.Point[] pts) {
+        double min = Double.MAX_VALUE;
+        int n = pts.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                double dx = pts[i].x - pts[j].x;
+                double dy = pts[i].y - pts[j].y;
+                double dist = Math.sqrt(dx * dx + dy * dy);
+                min = Math.min(min, dist);
+            }
+        }
+        return min;
+    }
+
+    public static void main(String[] args) {
+        testQuickSort();
+        testDeterministicSelectSort();
+        testMergeSort();
+        testClosestPairClass();
+        System.out.println("=== All Tests Passed ===");
+    }
+
 }
