@@ -6,15 +6,22 @@
 Architecture Overview (depth and allocations control)
 
 Metrics collection: Each algorithm run is wrapped with Metrics.startTimer/stopTimer. Comparisons are tracked via addComparisons, and recursion depth is monitored through paired calls to enterRecursion and exitRecursion, which also record the maximum observed depth.
+
 Recursion depth: Recursive algorithms increase depth counters on entry and restore on exit. QuickSort is designed to recurse only into the smaller partition, handling the larger one iteratively. This ensures recursion depth remains close to O(log n), even with unbalanced partitions. MergeSort, DeterministicSelect, and ClosestPair divide problems recursively, and their depth also scales logarithmically with input size.
+
 Memory usage: Only deliberate algorithmic allocations are logged through Metrics.addAllocation. MergeSort allocates a single auxiliary buffer of size n per run (allocations = n). QuickSort and DeterministicSelect are in-place (allocations = 0). ClosestPair creates temporary lists and performs sorting inside the strip phase, but those allocations aren’t counted, so CSV output still shows 0.
 
 Complexity Analysis
 
 MergeSort: Recurrence T(n) = 2T(n/2) + O(n). By the Master Theorem (a=2, b=2, f(n)=Θ(n)), runtime is O(n log n). Stack depth = O(log n). Memory overhead is O(n) due to the auxiliary buffer, which also helps with cache efficiency.
-QuickSort (randomized, smaller-side recursion): Expected recurrence T(n) = T(U) + T(n–1–U) + O(n), where pivot position U is uniform. Intuitively (via Master Theorem/Akra–Bazzi), runtime averages O(n log n). Restricting recursion to the smaller side keeps depth O(log n). Worst case remains O(n²), though rare under random pivoting.
-DeterministicSelect (median of medians): Recurrence T(n) ≤ T(n/5) + T(7n/10) + O(n). Akra–Bazzi theorem gives T(n) = O(n). Recursion depth = O(log n). In-place partitioning minimizes memory.
-Closest Pair of Points: Initial sorting by x takes O(n log n). Divide-and-conquer recurrence T(n) = 2T(n/2) + O(n), so runtime is O(n log n). This version re-sorts the strip by y at each recursion level instead of maintaining a global y-order. That adds constant-factor work but overall complexity remains O(n log n).
+
+QuickSort (randomized, smaller-side recursion): Expected recurrence T(n) = T(U) + T(n–1–U) + O(n), where pivot position U is uniform. Intuitively (via Master Theorem/Akra–Bazzi), runtime averages O(n log n). 
+Restricting recursion to the smaller side keeps depth O(log n). Worst case remains O(n²), though rare under random pivoting.
+DeterministicSelect (median of medians): Recurrence T(n) ≤ T(n/5) + T(7n/10) + O(n). 
+Akra–Bazzi theorem gives T(n) = O(n). Recursion depth = O(log n). In-place partitioning minimizes memory.
+Closest Pair of Points: Initial sorting by x takes O(n log n). 
+Divide-and-conquer recurrence T(n) = 2T(n/2) + O(n), so runtime is O(n log n). This version re-sorts the strip by y at each recursion level instead of maintaining a global y-order. 
+That adds constant-factor work but overall complexity remains O(n log n).
 
 In my implementation I aimed to control recursion depth and reduce unnecessary allocations:
 
@@ -91,6 +98,7 @@ Java GC introduces occasional noise but not critical.
 QuickSort & MergeSort → Theoretical O(n log n) and very fast in practice.
 Deterministic Select → Linear O(n), but slower constants.
 Closest Pair → Matches O(n log n) but suffers from overheads.
+
 
 
 
