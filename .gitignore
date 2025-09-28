@@ -1,0 +1,6 @@
+*.csv
+**/*.csv
+docx/
+docx/*.md
+*.docx
+**/*.docx
