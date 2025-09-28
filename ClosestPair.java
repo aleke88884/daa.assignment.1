@@ -53,7 +53,7 @@ class ClosestPair {
         int mid = (left + right) / 2;
         Point midPoint = pointsX[mid];
 
-        // делим pointsY на левую и правую половины
+        // dividing pointsY to left and right
         List<Point> leftY = new ArrayList<>();
         List<Point> rightY = new ArrayList<>();
         for (Point p : pointsY) {
@@ -64,13 +64,13 @@ class ClosestPair {
             }
         }
 
-        // рекурсивные вызовы
+        // recursive functions
         double dl = closestUtil(pointsX, leftY.toArray(new Point[0]), left, mid);
         double dr = closestUtil(pointsX, rightY.toArray(new Point[0]), mid + 1, right);
 
         double d = Math.min(dl, dr);
 
-        // формируем "полосу" вокруг середины
+        // creating straight way
         List<Point> strip = new ArrayList<>();
         for (Point p : pointsY) {
             if (Math.abs(p.x - midPoint.x) < d) {
@@ -81,13 +81,13 @@ class ClosestPair {
         return Math.min(d, stripClosest(strip, d));
     }
 
-    // Основной интерфейс
+    // main interface
     static double closest(Point[] points) {
-        // сортировка по x
+        // sorting x
         Point[] pointsX = points.clone();
         Arrays.sort(pointsX, Comparator.comparingDouble(p -> p.x));
 
-        // сортировка по y
+        // sorting y
         Point[] pointsY = points.clone();
         Arrays.sort(pointsY, Comparator.comparingDouble(p -> p.y));
 
