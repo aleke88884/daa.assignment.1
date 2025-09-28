@@ -21,12 +21,12 @@ class DeterministicSelect {
     }
 
     private static int medianOfMedians(int[] arr, int left, int right) {
-        // TODO Auto-generated method stub
+        
         throw new UnsupportedOperationException("Unimplemented method 'medianOfMedians'");
     }
 
     private static int partition(int[] arr, int left, int right, int pivotIndex) {
-        // TODO Auto-generated method stub
+
         throw new UnsupportedOperationException("Unimplemented method 'partition'");
     }
 }
